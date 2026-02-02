@@ -33,8 +33,11 @@ if ($item.PSIsContainer) {
     return
 }
 
+$results = Get-Content -Path $filepath | Select-String -Pattern $PatternMatch
 
-
-Get-Content -Path $filepath | Select-String -Pattern $PatternMatch
-
+if ($PSBoundParameters.ContainsKey('Count')) {
+                            Write-Host "Count: $($results.count)"
+    }else {
+        Write-Output $results
+    }
 }
