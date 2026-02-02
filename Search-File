@@ -11,7 +11,7 @@ function Search-File {
 
 
 # Step 1: Validate input
-# 1) Resolve the path (throws error if not found)
+# 1) Resolve the path (throws an error if the file is not found)
 try {
     $resolved = Resolve-Path -LiteralPath $FilePath -ErrorAction Stop
 } catch {
@@ -19,7 +19,7 @@ try {
     return
 }
 
-# 2) Get the item (throws on access denied / other I/O errors)
+# 2) Get the item (throws if access is denied / other I/O errors)
 try {
     $item = Get-Item -LiteralPath $resolved -ErrorAction Stop
 } catch {
@@ -27,7 +27,7 @@ try {
     return
 }
 
-# 3) Ensure it's a file, not a directory
+# 3) Check that it's a file, not a directory
 if ($item.PSIsContainer) {
     Write-Error "The specified path is a directory; a file is required: $resolved"
     return
