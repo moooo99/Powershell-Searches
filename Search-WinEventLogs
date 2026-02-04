@@ -1,0 +1,28 @@
+function Search-WinEventLogs {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true, HelpMessage = "Enter the name of a Windows Log.")]
+        [ValidateSet("Application","Security","System","Setup")]
+        [string]$LogName,
+        [Parameter(Mandatory = $false)]
+        [int[]]$EventID,
+        [Parameter(Mandatory = $false)]
+        [Int32]$count,
+        [Parameter(Mandatory = $false)]
+        [string]$DateRange,
+        [Parameter(Mandatory = $false)]
+        [Switch]$LogonEvents
+        )
+
+
+    #Build Output
+    if ($PSBoundParameters.ContainsKey('EventID')) {
+        Get-WinEvent -FilterHashtable @{logname=$LogName;id=$EventID}|Format-Table TimeCreated,Id,Message
+        }
+    else {
+        #We can remove the | Select-Object -First 5 once we deal with the output
+        #rather than filling the terminal.
+        Get-WinEvent -LogName $LogName | Select-Object -First 5
+    }
+
+}
