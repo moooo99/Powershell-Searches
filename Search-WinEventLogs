@@ -7,22 +7,29 @@ function Search-WinEventLogs {
         [Parameter(Mandatory = $false)]
         [int[]]$EventID,
         [Parameter(Mandatory = $false)]
-        [Int32]$count,
+        [datetime]$StartTime,
         [Parameter(Mandatory = $false)]
-        [string]$DateRange,
+        [datetime]$EndTime,
+        [Parameter(Mandatory = $false)]
+        [Int32]$count,
         [Parameter(Mandatory = $false)]
         [Switch]$LogonEvents
         )
 
 
-    #Build Output
-    if ($PSBoundParameters.ContainsKey('EventID')) {
-        Get-WinEvent -FilterHashtable @{logname=$LogName;id=$EventID}|Format-Table TimeCreated,Id,Message
-        }
-    else {
-        #We can remove the | Select-Object -First 5 once we deal with the output
-        #rather than filling the terminal.
-        Get-WinEvent -LogName $LogName | Select-Object -First 5
+    $EventLogs = @{
+        logname = $Logname
     }
+
+    if ($PSBoundParameters.ContainsKey('EventID')) {
+        $EventLogs.Add('ID', $EventID)
+    }
+    
+    if ($PSBoundParameters.ContainsKey('StartTime')) {
+        $EventLogs.Add('StartTime', $StartTime)
+        $EventLogs.Add('EndTime', $EndTime)
+    }
+
+    Get-WinEvent -FilterHashtable $EventLogs
 
 }
