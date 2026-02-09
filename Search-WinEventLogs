@@ -17,19 +17,25 @@ function Search-WinEventLogs {
         )
 
 
-    $EventLogs = @{
+$EventLogs = @{
         logname = $Logname
-    }
+        }
 
     if ($PSBoundParameters.ContainsKey('EventID')) {
         $EventLogs.Add('ID', $EventID)
-    }
+        }
     
     if ($PSBoundParameters.ContainsKey('StartTime')) {
         $EventLogs.Add('StartTime', $StartTime)
         $EventLogs.Add('EndTime', $EndTime)
-    }
+        }
+    if ($PSBoundParameters.ContainsKey('Count')) {
+        $Limit = $count
+        }
+    else {
+        $Limit = 5
+        }
 
-    Get-WinEvent -FilterHashtable $EventLogs
-
+    Get-WinEvent -FilterHashtable $EventLogs | Select-Object -First $Limit
+    
 }
